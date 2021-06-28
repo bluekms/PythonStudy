@@ -1,3 +1,16 @@
+# import
+* import json
+* import datetime
+
+# 연산자
+## **
+거듭제곱
+
+## //
+나누기 후 소숫점 버림
+
+
+# 함수
 ## ord()
 문자 -> 숫자 ordinal value
 
@@ -27,3 +40,6 @@ json -> 문자열
 
 ## json.loads(JSONSTR)
 문자열 -> json
+
+## array.index(N)
+배열에 인덱스로 접근 array[N] 안됨
