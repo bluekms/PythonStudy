@@ -1,6 +1,9 @@
 # import
 * import json
 * import datetime
+<br>
+<br>
+<br>
 
 # 연산자
 ## **
@@ -8,7 +11,28 @@
 
 ## //
 나누기 후 소숫점 버림
+<br>
+<br>
+<br>
 
+# 날짜
+* 오늘시간 = datetime.datetime.today()
+* print(오늘시간.year)
+* print(오늘시간.month)
+* print(오늘시간.day)
+* print(오늘시간.hour)
+* print(오늘시간.minute)
+* print(오늘시간.second)
+* print(오늘시간.microsecond)
+```
+시간 = 1
+분 = 1
+print(f{시간:0>2}:{분:0>2})
+01:01
+```
+<br>
+<br>
+<br>
 
 # 함수
 ## ord()
@@ -43,11 +67,6 @@ json -> 문자열
 
 ## array.index(N)
 배열에 인덱스로 접근 array[N] 안됨
-
-# Tips
-```
-시간 = 1
-분 = 1
-print(f{시간:0>2}:{분:0>2})
-01:01
-```
+<br>
+<br>
+<br>
