@@ -1,6 +1,10 @@
 # import
 * import json
 * import datetime
+* import numpy as np
+    * np.rot90(array, 반시계방향_횟수)
+    * np.array(ARRAY) 사칙연산 가능 (+-*/, @ 행렬의 곱)
+
 <br>
 <br>
 <br>
@@ -87,6 +91,8 @@ for i in array
 chr(i) for i in array
 
 ''.join([chr(i) for i in array])
+
+# str(num)은 캐스팅
 ```
 
 <br>
