@@ -79,6 +79,18 @@ list.pop(N) :
 N번 요소를 꺼냄
 <br>
 <br>
+
+## 배열의 숫자를 영어로 바꾸기
+```
+for i in array
+
+chr(i) for i in array
+
+''.join([chr(i) for i in array])
+```
+
+<br>
+<br>
 <br>
 # 정적 타입 선언
 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=passion053&logNo=221070020739
