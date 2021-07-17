@@ -95,6 +95,12 @@ chr(i) for i in array
 # str(num)은 캐스팅
 ```
 
+## 임의 배열 초기화
+```
+arr = [[0 for i in range(col)] for i in range(row)]
+arr = [[[0, 0] for i in range(col)] for j in range(row)]
+```
+
 <br>
 <br>
 <br>

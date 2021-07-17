@@ -24,5 +24,9 @@ import numpy as np
 
 int(''.join([str(i) for i in 결과[0]]), 8)
 
-for j in range(1, 5):
-    print(chr(int(''.join([str(i) for i in 결과[j]]), 8)))
+for j in range(0, 5):
+    value = int(''.join([str(i) for i in 결과[j]]), 8)
+    if j == 0:
+        print(value)
+    else:
+        print(chr(value))
