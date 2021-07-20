@@ -1,4 +1,5 @@
 # import
+* from typing import Dict, List, Tuple
 * import json
 * import datetime
 * import numpy as np
@@ -62,10 +63,22 @@ json.loads(JSONSTR) :
 
 array.index(N) : 
 배열에 인덱스로 접근 array[N] 안됨
+
+bin(n), oct(n), hex(n) :
+진수 구하기
+
+format(n, ',') :
+3자리마다 쉼표 추가
 <br>
 <br>
 <br>
 # 컨테이너 관련 함수
+
+str[2:] :
+2번째부터 끝까지
+
+str[::-1] :
+역순으로
 
 len(arr) :
 배열 길이를 구한다
