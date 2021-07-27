@@ -21,6 +21,7 @@
 <br>
 
 # 날짜
+import datetime
 * curr = datetime.datetime.today()
 * curr.year
 * curr.month
@@ -34,6 +35,11 @@
 분 = 1
 print(f{시간:0>2}:{분:0>2})
 01:01
+```
+```
+import datetime
+today = datetime.datetime.now()
+print(f'today:%Y-%m-%d-%A')
 ```
 <br>
 <br>
@@ -114,6 +120,14 @@ arr = [[0 for i in range(col)] for i in range(row)]
 arr = [[[0, 0] for i in range(col)] for j in range(row)]
 ```
 
+## f string
+```
+print(f'{"kms":<10}')       # KMS
+print(f'{"kms":>10}')       #        KSM
+print(f'{"kms":~^10}')      # ~~~kms~~~~
+print(f"{3.141592:0.2f}")   # 3.1
+print(f"{3.141592:0.2}")    # 3.14
+```
 <br>
 <br>
 <br>
