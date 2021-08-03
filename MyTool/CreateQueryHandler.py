@@ -100,14 +100,64 @@ namespace NK.LobbyWebAPI.Queries
 
 """
 
+select_netlist = """using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using NK.Db;
+using NK.LobbyWebAPI.Services;
+using NK.Network.Packet;
+using NK.Network.Packet.Lobby;
+using NK.StaticData;
+
+namespace NK.LobbyWebAPI.Queries
+{{
+    public sealed record Select{table_name}RowsQuery
+        (PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
+
+    public class Select{table_name}NetDataQueryHandler : IQueryHandler<Select{table_name}RowsQuery, List<NetUser{table_name}Data>>
+    {{
+        private readonly UserService userService;
+
+        public Select{table_name}NetDataQueryHandler(UserService userService)
+        {{
+            this.userService = userService;
+        }}
+
+        public async Task<List<NetUser{table_name}Data>> QueryAsync(Select{table_name}RowsQuery query, CancellationToken cancellationToken = default)
+        {{
+            using var user = userService.UserManager.LoadUser(query.Usn, true,
+                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode, ContentsOpen.None,
+                query.PacketCategory);
+
+            if (resultCode != ResultCode.Success)
+            {{
+                throw new WebAPIException(resultCode, $"LoadUser failed, resultCode: {{resultCode}}");
+            }}
+
+            var rows = user.DbContext.User{table_name}
+                .Where(x => x.usn == query.Usn);
+
+            var netData = new List<NetUser{table_name}Data>(rows.Count());
+            rows.IQueryableToList(netData);
+
+            return netData;
+        }}
+    }}
+}}
+
+"""
+
 # ==================================================
 #   Main
 #   Set Arguments
 #       select_row
 #       select_rows
+#       select_netlist
 # ==================================================
-query = select_rows
-table_name = "Dispatch"
+query = select_netlist
+table_name = "Outpost"
 
 f = open(output_file_name, "w")
 f.write(query.format(table_name = table_name))
