@@ -70,6 +70,142 @@ x[res]  # value가 가장 큰 요소의 value를 출력
 # ==============================
 # sort : 리스트의 원본을 직접 정렬
 # sorted : 정렬된 리스트를 반환
+# lambda를 사용해 dictionary 정렬 가능
 # ==============================
+x = [1, 3, 2, 5]
 x.sort()
 sorted(x)
+
+test1 = ["abc", "def", "hello world", "hello", "python"]
+sorted(test1, key=len, reverse=True)
+# ['hello world', 'python', 'hello', 'abc', 'def']
+# 길이순, 역방향 정렬
+
+test2 = "Life is too short, You need python".split()
+sorted(test2, key=str.lower)
+# ['is', 'Life', 'need', 'python', 'short,', 'too', 'You']
+# 대소문자 구별 없이 알파벳으로 정렬
+
+test3 = list(zip("anvfe", [1, 2, 5, 4, 3]))
+sorted(test3, key=lambda x: x[1])
+# [('a', 1), ('n', 2), ('e', 3), ('f', 4), ('v', 5)]
+# x[1]은 list
+# list의 순서로 정렬된 내용을 반환
+
+sorted(test3, key=lambda x: x[0])
+# [('a', 1), ('e', 3), ('f', 4), ('n', 2), ('v', 5)]
+# x[0]은 str
+# 문자열의 순서대로 정렬된 내용을 반환
+
+# ==============================
+# in, not in
+# ==============================
+5 in [1, 2, 3, 4, 5]  # True
+5 not in [1, 2, 3, 4, 5]  # False
+
+
+# ==============================
+# reverse : 리스트 원본을 직접 뒤집음
+# reversed : 뒤집힌 리스트를 반환
+# ==============================
+x.reverse()
+reversed(x)
+
+
+# ==============================
+# queue
+# ==============================
+l = []
+l.append(10)
+l.append(20)
+l.append(30)
+l.pop(0)
+
+
+import queue
+
+q = queue.Queue()
+q.put(10)
+q.put(20)
+q.put(30)
+q.get()
+
+
+class ListQueue:
+    def __init__(self):
+        self.queue = []
+
+    def push(self, n):
+        return self.queue.append(n)
+
+    def pop(self):
+        if len(self.queue) == 0:
+            return -1
+        return self.queue.pop(0)
+
+    def printq(self):
+        print(self.queue)
+
+    def empty(self):
+        if len(self.queue) == 0:
+            return True
+        return False
+
+
+q = ListQueue()
+q.push(10)
+q.push(20)
+q.push(30)
+q.pop()
+
+
+# ==============================
+# stack
+# ==============================
+l = []
+l.append(10)
+l.append(20)
+l.append(30)
+l.pop()
+
+
+class ListStack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, n):
+        return self.stack.append(n)
+
+    def pop(self):
+        if len(self.stack) == 0:
+            return -1
+        return self.stack.pop()
+
+    def prints(self):
+        print(self.stack)
+
+    def empty(self):
+        if len(self.stack) == 0:
+            return True
+        return False
+
+
+s = ListStack()
+s.push(10)
+s.push(20)
+s.push(30)
+s.pop()
+
+d = {"one": "하나", "two": "둘"}
+d.keys()  # 키의 리스트
+d.values()  # 값의 리스트
+d.items()  # 튜플의 리스트
+
+
+# ==============================
+# set p.30
+# ==============================
+s = {3, 1, 1, 2, 2, 4, 5}
+s.add(7)
+s.discard(7)
+1 in s
