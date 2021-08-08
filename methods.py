@@ -85,6 +85,7 @@ test2 = "Life is too short, You need python".split()
 sorted(test2, key=str.lower)
 # ['is', 'Life', 'need', 'python', 'short,', 'too', 'You']
 # 대소문자 구별 없이 알파벳으로 정렬
+# split의 기본값은 빈문자
 
 test3 = list(zip("anvfe", [1, 2, 5, 4, 3]))
 sorted(test3, key=lambda x: x[1])
@@ -196,6 +197,18 @@ s.push(20)
 s.push(30)
 s.pop()
 
+
+# ==============================
+# tuple
+# ==============================
+t = (1, 2, 3, 1, 3)
+t.count(1)
+t.index(2)
+
+
+# ==============================
+# dictionary
+# ==============================
 d = {"one": "하나", "two": "둘"}
 d.keys()  # 키의 리스트
 d.values()  # 값의 리스트
@@ -203,9 +216,55 @@ d.items()  # 튜플의 리스트
 
 
 # ==============================
-# set p.30
+# set
+#   중복제거
 # ==============================
-s = {3, 1, 1, 2, 2, 4, 5}
-s.add(7)
-s.discard(7)
-1 in s
+s1 = {3, 1, 1, 2, 2, 4, 5}
+s1.add(7)  # 값 추가
+s1.update({10, 2, 30})  # 값들 추가
+s1.remove(30)  # 없으면 에러
+s1.discard(7)  # 없어도 넘어감 (없음을 보장)
+1 in s1  # True
+
+판콜에이 = {"A", "B", "C"}
+타이레놀 = {"A", "B", "D"}
+판콜에이.difference(타이레놀)  # 차집함: {"C"}
+판콜에이.intersection(타이레놀)  # 교집합: {"B", "A"}
+판콜에이.union(타이레놀)  # 합집합: {"A", "D", "C", "B"}
+
+# 중복제거
+serverData = "개리 라이캣 개리 개리 라이캣 자바독 자바독 파이 썬"
+len(set(serverData.split()))
+d = {}
+for i in set(serverData.split()):
+    d[i] = serverData.split().count(i)
+
+# print(d)
+
+
+# ==============================
+# split
+# ==============================
+str = "1 2 3 4 5 6 7"
+l = [int(i) for i in str.split()]  # 스마트어레이 사용
+l = list(map(int, str.split()))  # map으로 함수 int로 묶기
+
+
+# ==============================
+# enumerate
+# ==============================
+print("enumerate")
+x = ["one", "two", "three"]
+
+print("A")
+for iterable in enumerate(x):
+    print(iterable)
+
+print("B")
+for counter, value in enumerate(x):
+    print(counter, value)
+
+print("C")
+x = [10, 20, 30, 40, 50]
+for i, j in enumerate(x, 2):
+    print(i, j)
