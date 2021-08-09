@@ -1,7 +1,7 @@
 # ==================================================
 #   Detail
 # ==================================================
-output_file_name = "./MyTool/build/output.cs"
+output_file_name = "./MyTool/build/QueryHandler.cs"
 
 select_row = """using System.Linq;
 using System.Reflection;
