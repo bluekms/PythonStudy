@@ -15,8 +15,7 @@ using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Queries
 {{
-    public sealed record Select{table_name}RowQuery
-        (PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
+    public sealed record Select{table_name}RowQuery(PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
 
     public class Select{table_name}RowQueryHandler : IQueryHandler<Select{table_name}RowQuery, UserDbContext.DBUser{table_name}>
     {{
@@ -39,7 +38,7 @@ namespace NK.LobbyWebAPI.Queries
             }}
 
             var row = await user.DbContext.User{table_name}
-                .Where(x => x.usn == query.Usn)
+                .Where(row => row.usn == query.Usn)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (row == null)
@@ -67,8 +66,7 @@ using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Queries
 {{
-    public sealed record Select{table_name}RowsQuery
-        (PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
+    public sealed record Select{table_name}RowsQuery(PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
 
     public class Select{table_name}RowsQueryHandler : IQueryHandler<Select{table_name}RowsQuery, List<UserDbContext.DBUser{table_name}>>
     {{
@@ -91,7 +89,7 @@ namespace NK.LobbyWebAPI.Queries
             }}
 
             var rows = user.DbContext.User{table_name}
-                .Where(x => x.usn == query.Usn);
+                .Where(row => row.usn == query.Usn);
 
             return await rows.ToListAsync(cancellationToken);
         }}
@@ -113,8 +111,7 @@ using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Queries
 {{
-    public sealed record Select{table_name}RowsQuery
-        (PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
+    public sealed record Select{table_name}RowsQuery(PacketActionAttribute.PacketCategory PacketCategory, long Usn) : IQuery;
 
     public class Select{table_name}NetDataQueryHandler : IQueryHandler<Select{table_name}RowsQuery, List<NetUser{table_name}Data>>
     {{
@@ -137,7 +134,7 @@ namespace NK.LobbyWebAPI.Queries
             }}
 
             var rows = user.DbContext.User{table_name}
-                .Where(x => x.usn == query.Usn);
+                .Where(row => row.usn == query.Usn);
 
             var netData = new List<NetUser{table_name}Data>(rows.Count());
             rows.IQueryableToList(netData);
@@ -157,7 +154,7 @@ namespace NK.LobbyWebAPI.Queries
 #       select_netlist
 # ==================================================
 query = select_netlist
-table_name = "Outpost"
+table_name = "Reddot"
 
 f = open(output_file_name, "w")
 f.write(query.format(table_name = table_name))
