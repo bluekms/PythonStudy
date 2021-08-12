@@ -3,7 +3,7 @@
 # ==================================================
 output_file_name = "./MyTool/build/CommandHandler.cs"
 
-create_rows = """using System;
+insert_rows = """using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,21 +16,21 @@ using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Commands
 {{
-    public sealed record Create{table_name}Command(
+    public sealed record Insert{table_name}Command(
         PacketActionAttribute.PacketCategory PacketCategory,
         long Usn,
         List<Net{table_name}Data> {table_name}s) : ICommand;
 
-    public class Create{table_name}CommandHandler : ICommandHandler<Create{table_name}Command>
+    public class Insert{table_name}CommandHandler : ICommandHandler<Insert{table_name}Command>
     {{
         private readonly UserService userService;
 
-        public Create{table_name}CommandHandler(UserService userService)
+        public Insert{table_name}CommandHandler(UserService userService)
         {{
             this.userService = userService;
         }}
 
-        public async Task ExecuteAsync(Create{table_name}Command command)
+        public async Task ExecuteAsync(Insert{table_name}Command command)
         {{
             using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}",
                 out var resultCode, ContentsOpen.None, command.PacketCategory);
@@ -64,11 +64,11 @@ namespace NK.LobbyWebAPI.Commands
 # ==================================================
 #   Main
 #   Set Arguments
-#       create_rows
+#       insert_rows
 # ==================================================
-query = create_rows
-table_name = "Reddot"
+query = insert_rows
+table_name = "CharacterCostume"
 
 f = open(output_file_name, "w")
-f.write(query.format(table_name = table_name))
+f.write(query.format(table_name=table_name))
 f.close()
