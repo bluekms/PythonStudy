@@ -34,7 +34,7 @@ namespace NK.LobbyWebAPI.Queries
 
             if (resultCode != ResultCode.Success)
             {{
-                throw new WebAPIException(resultCode, $"LoadUser failed, resultCode: {{resultCode}}");
+                throw new WebAPIException(resultCode);
             }}
 
             var row = await user.DbContext.User{table_name}
@@ -85,7 +85,7 @@ namespace NK.LobbyWebAPI.Queries
 
             if (resultCode != ResultCode.Success)
             {{
-                throw new WebAPIException(resultCode, $"LoadUser failed, resultCode: {{resultCode}}");
+                throw new WebAPIException(resultCode);
             }}
 
             var rows = user.DbContext.User{table_name}
@@ -130,7 +130,7 @@ namespace NK.LobbyWebAPI.Queries
 
             if (resultCode != ResultCode.Success)
             {{
-                throw new WebAPIException(resultCode, $"LoadUser failed, resultCode: {{resultCode}}");
+                throw new WebAPIException(resultCode);
             }}
 
             var rows = user.DbContext.User{table_name}
@@ -153,7 +153,7 @@ namespace NK.LobbyWebAPI.Queries
 #       select_rows
 #       select_netlist
 # ==================================================
-query = select_netlist
+query = select_rows
 table_name = "Reddot"
 
 f = open(output_file_name, "w")
