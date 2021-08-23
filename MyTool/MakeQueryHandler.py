@@ -153,7 +153,7 @@ namespace NK.LobbyWebAPI.Queries
 #       select_rows
 #       select_netlist
 # ==================================================
-query = select_rows
+query = select_netlist
 table_name = "Reddot"
 
 f = open(output_file_name, "w")
