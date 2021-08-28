@@ -131,5 +131,38 @@ print(f"{3.141592:0.2}")    # 3.14
 <br>
 <br>
 <br>
+# collections
+https://docs.python.org/3.11/library/collections.html
+
+## namedtuple
+명명된 필드를 가지는 튜플클래스 생성
+
+## deque
+양 끝에서 추가와 삭제
+
+## ChainMap
+여러개의 컨테이너를 묶을 수 있음
+
+## Counter
+구성요소의 수를 셈
+
+## OrderedDict
+순서있는 Dict
+
+## defaultdict
+키가 없을 때 기본값
+
+## UserDict
+Dict를 만드는 부모클래스
+
+## UserList
+List를 만드는 부모클래스
+
+## UserString
+String을 만드는 부모클래스
+
+<br>
+<br>
+<br>
 # 정적 타입 선언
 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=passion053&logNo=221070020739
