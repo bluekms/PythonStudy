@@ -4,14 +4,12 @@
 output_file_name = "./MyTool/build/Controller.cs"
 
 void_controller = """using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NK.LobbyWebAPI.Commands;
+using NK.LobbyWebAPI.Controllers.v1.Character;
 using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
@@ -26,7 +24,6 @@ namespace NK.LobbyWebAPI.Controllers.v1
 
         private sealed record ResponseWrapper(NetCommonData NetCommonData);
 
-        private readonly ILogger<{name}Contrller> logger;
         private readonly UserService userService;
         private readonly ILogger<CharacterLevelUpController> logger;
         private readonly ICommandHandler<UpdateUserDataCostumeLvCommand> {name}Command;
@@ -34,14 +31,12 @@ namespace NK.LobbyWebAPI.Controllers.v1
         private readonly IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData;
 
         public {name}Contrller(
-            ILogger<{name}Contrller> logger,
             UserService userService,
             ILogger<CharacterLevelUpController> logger,
             ICommandHandler<UpdateUserDataCostumeLvCommand> {name}Command,
             ICommandHandler<UpdateUserDataCostumeLvCommand, int> updateUserDataCostumeLv,
             IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData)
         {{
-            this.logger = logger;
             this.userService = userService;
             this.logger = logger;
             this.{name}Command = {name}Command;
@@ -66,12 +61,12 @@ namespace NK.LobbyWebAPI.Controllers.v1
             }}
             catch (WebAPIException webApiException)
             {{
-                logger.LogError(webApiException, "{Name} failed. {ResultCode}", MethodBase.GetCurrentMethod().Name, webApiException.ResultCode);
+                logger.LogError(webApiException, "{name} failed. Request: {{@request}}", request);
                 return new Res{name}e {{ result = webApiException.ResultCode }};
             }}
             catch (Exception ex)
             {{
-                logger.LogError(ex, "{name} failed.");
+                logger.LogError(ex, "{name} failed. Raised Exception.");
                 return new Res{name}e {{ result = ResultCode.Failure_SystemError }};
             }}
         }}
@@ -92,14 +87,13 @@ namespace NK.LobbyWebAPI.Controllers.v1
 list_controller = """using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NK.LobbyWebAPI.Commands;
 using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
+using NK.Log;
 using NK.Network.Packet;
 using NK.Network.Packet.Lobby;
 
@@ -112,24 +106,21 @@ namespace NK.LobbyWebAPI.Controllers.v1
 
         private sealed record ResponseWrapper(List<int> {name}s, NetCommonData NetCommonData);
 
-        private readonly ILogger<{name}Contrller> logger;
         private readonly UserService userService;
-        private readonly IQueryHandler<Select{name}Query, List<int>> select{name}Query;
+        private readonly IQueryHandler<Select{name}RowsQuery, List<int>> select{name}RowsQuery;
         private readonly IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData;
 
         public Get{name}Contrller(
-            ILogger<{name}Contrller> logger,
             UserService userService,
-            IQueryHandler<Select{name}Query, List<int>> select{name}Query,
+            IQueryHandler<Select{name}RowsQuery, List<int>> select{name}RowsQuery,
             IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData)
         {{
-            this.logger = logger;
             this.userService = userService;
             this.select{name}RowsQuery = select{name}RowsQuery;
             this.getCommonData = getCommonData;
         }}
 
-        [HttpPost("v1/{name}/get")]
+        [HttpPost(/* TODO */"v1/character/costume/get")]
         public async Task<ResGet{name}> Get{name}(
             [FromBody] ReqGet{name} request,
             CancellationToken cancellationToken)
@@ -151,12 +142,12 @@ namespace NK.LobbyWebAPI.Controllers.v1
             }}
             catch (WebAPIException webApiException)
             {{
-                logger.LogError(webApiException, "{Name} failed. {ResultCode}", MethodBase.GetCurrentMethod().Name, webApiException.ResultCode);
+                NKLog.LogError($"Get{name} failed. resultcode: {{webApiException.ResultCode}}, Message: {{webApiException.Message}},  usn: {{request.usn}}");
                 return new ResGet{name} {{ result = webApiException.ResultCode }};
             }}
-            catch (Exception ex)
+            catch (Exception e)
             {{
-                logger.LogError(ex, "{name} failed.");
+                NKLog.LogError($"Get{name} failed. Message: {{e.Message}}, usn: {{request.usn}}");
                 return new ResGet{name} {{ result = ResultCode.Failure_SystemError }};
             }}
         }}
@@ -178,14 +169,13 @@ namespace NK.LobbyWebAPI.Controllers.v1
 currency_controller = """using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NK.LobbyWebAPI.Commands;
 using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
+using NK.Log;
 using NK.Network.Packet;
 using NK.Network.Packet.Lobby;
 
@@ -198,18 +188,15 @@ namespace NK.LobbyWebAPI.Controllers.v1
 
         private sealed record ResponseWrapper(List<NetCurrencyData> NetCurrencyData, NetCommonData NetCommonData);
 
-        private readonly ILogger<{name}Contrller> logger;
         private readonly UserService userService;
         private readonly ICommandHandler<{name}Command> insertCharacterCostumeCommand;
         private readonly IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData;
 
         public {name}Contrller(
-            ILogger<{name}Contrller> logger,
             UserService userService,
             ICommandHandler<{name}Command> insertCharacterCostumeCommand,
             IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData)
         {{
-            this.logger = logger;
             this.userService = userService;
             this.insertCharacterCostumeCommand = insertCharacterCostumeCommand;
             this.getCommonData = getCommonData;
@@ -237,12 +224,12 @@ namespace NK.LobbyWebAPI.Controllers.v1
             }}
             catch (WebAPIException webApiException)
             {{
-                logger.LogError(webApiException, "{Name} failed. {ResultCode}", MethodBase.GetCurrentMethod().Name, webApiException.ResultCode);
+                NKLog.LogError($"{name}Data failed. resultcode: {{webApiException.ResultCode}}, Message: {{webApiException.Message}},  usn: {{request.usn}}");
                 return new Res{name} {{ result = webApiException.ResultCode }};
             }}
-            catch (Exception ex)
+            catch (Exception e)
             {{
-                logger.LogError(ex, "{name} failed.");
+                NKLog.LogError($"{name}Data failed. Message: {{e.Message}}, usn: {{request.usn}}");
                 return new Res{name} {{ result = ResultCode.Failure_SystemError }};
             }}
         }}
@@ -268,7 +255,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       currency_controller
 # ==================================================
 query = list_controller
-name = "ReddotData"
+name = "ReddotController"
 
 f = open(output_file_name, "w")
 f.write(query.format(name = name))
