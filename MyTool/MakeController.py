@@ -4,14 +4,12 @@
 output_file_name = "./MyTool/build/Controller.cs"
 
 void_controller = """using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NK.LobbyWebAPI.Commands;
+using NK.LobbyWebAPI.Feature.Common;
 using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
@@ -19,74 +17,76 @@ using NK.Network.Packet.Lobby;
 
 namespace NK.LobbyWebAPI.Controllers.v1
 {{
-    [ApiController]
-    public class {name}Contrller : ControllerBase
+    public class {name}Controller : Controller
     {{
-        private sealed record RequestWrapper(PacketActionAttribute.PacketCategory PacketCategory, long Usn);
+        private sealed record RequestWrapper(long Usn);
 
-        private sealed record ResponseWrapper(NetCommonData NetCommonData);
+        private sealed record ResponseWrapper(NetCommonData CommonData);
 
-        private readonly ILogger<{name}Contrller> logger;
+        private readonly ILogger<{name}Controller> logger;
+        private readonly IMapper mapper;
         private readonly UserService userService;
-        private readonly ILogger<CharacterLevelUpController> logger;
-        private readonly ICommandHandler<UpdateUserDataCostumeLvCommand> {name}Command;
-        private readonly ICommandHandler<UpdateUserDataCostumeLvCommand, int> updateUserDataCostumeLv;
         private readonly IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData;
 
-        public {name}Contrller(
-            ILogger<{name}Contrller> logger,
+        public {name}Controller(
+            ILogger<{name}Controller> logger,
+            IMapper mapper,
             UserService userService,
-            ILogger<CharacterLevelUpController> logger,
-            ICommandHandler<UpdateUserDataCostumeLvCommand> {name}Command,
-            ICommandHandler<UpdateUserDataCostumeLvCommand, int> updateUserDataCostumeLv,
             IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData)
         {{
             this.logger = logger;
+            this.mapper = mapper;
             this.userService = userService;
-            this.logger = logger;
-            this.{name}Command = {name}Command;
-            this.updateUserDataCostumeLv = updateUserDataCostumeLv;
             this.getCommonData = getCommonData;
         }}
 
-        [HttpPost("v1/character/costume/levelup")]
-        public async Task<Res{name}e> {name}(
-            [FromBody] Req{name}e request,
+        [HttpPost("v1/{name_lower}/get")]
+        public async Task<Res{name}> {name}(
+            [FromBody] Req{name} request,
             CancellationToken cancellationToken)
         {{
             try
             {{
-                var res = await HandleAsync(new(request.PacketCategory, request.usn), cancellationToken);
-
-                return new Res{name}e()
+                var res = await HandleAsync(new(request.usn), cancellationToken);
+                if (res == null)
                 {{
-                    result = ResultCode.Success,
-                    CommonData = res.NetCommonData,
+                    return new Res{name}
+                    {{
+                        result = ResultCode.Failure_SystemError,
+                    }};
+                }}
+
+                return new Res{name}
+                {{
+                    result = ResultCode.Failure_SystemError,
                 }};
             }}
             catch (WebAPIException webApiException)
             {{
-                logger.LogError(webApiException, "{Name} failed. {ResultCode}", MethodBase.GetCurrentMethod().Name, webApiException.ResultCode);
-                return new Res{name}e {{ result = webApiException.ResultCode }};
+                logger.LogError(webApiException, "{name} failed. ResultCode : {{resultcode}}", webApiException.ResultCode);
+                return new Res{name}
+                {{
+                    result = webApiException.ResultCode,
+                }};
             }}
             catch (Exception ex)
             {{
                 logger.LogError(ex, "{name} failed.");
-                return new Res{name}e {{ result = ResultCode.Failure_SystemError }};
+                return new Res{name}
+                {{
+                    result = ResultCode.Failure_SystemError,
+                }};
             }}
         }}
 
         private async Task<ResponseWrapper> HandleAsync(RequestWrapper request, CancellationToken cancellationToken)
         {{
-            await {name}Command.ExecuteAsync(new(request.PacketCategory, request.Usn));
-
-            var commonData = await getCommonData.QueryAsync(new(request.PacketCategory, request.Usn), cancellationToken);
+            var commonData = await getCommonData.QueryAsync(new(request.Usn), cancellationToken);
 
             return new(commonData);
         }}
     }}
 }}
-
 """
 
 list_controller = """using System;
@@ -263,13 +263,13 @@ namespace NK.LobbyWebAPI.Controllers.v1
 # ==================================================
 #   Main
 #   Set Arguments
-#       void_controller
+#       void_controller (Update)
 #       list_controller
 #       currency_controller
 # ==================================================
-query = list_controller
-name = "ReddotData"
+query = void_controller
+name = "AcceptEmergencyQuest"
 
 f = open(output_file_name, "w")
-f.write(query.format(name = name))
+f.write(query.format(name = name, name_lower = name.lower()))
 f.close()
