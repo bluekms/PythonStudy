@@ -13,50 +13,44 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mapster;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using NK.LobbyWebAPI.Models;
+using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
-using NK.Network.Data;
 using NK.Network.Packet;
-using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Queries
+namespace NK.LobbyWebAPI.Feature.{name}
 {{
-    public sealed record SelectReddotQuery(PacketActionAttribute.PacketCategory PacketCategory, long Usn, long seq) : IQuery;
+    public sealed record Select{name}ListQuery(long Usn) : IQuery;
 
-    public sealed record User{name}(long Seq, ReddotContentType ContentType, string ReddotData);
+    public sealed record User{name}(int {name}Id, int UserValue, bool IsReceived);
 
-    public class SelectReddotQueryHandler : IQueryHandler<SelectReddotQuery, List<{name}>>
+    public class Select{name}ListQueryHandler : IQueryHandler<Select{name}ListQuery, List<User{name}>>
     {{
-        private readonly UserService userService;
         private readonly IMapper mapper;
+        private readonly UserService userService;
 
-        public SelectReddotQueryHandler(UserService userService, IMapper mapper)
+        public Select{name}ListQueryHandler(UserService userService, IMapper mapper)
         {{
             this.userService = userService;
             this.mapper = mapper;
         }}
 
-        public async Task<List<{name}>> QueryAsync(SelectReddotQuery query, CancellationToken cancellationToken = default)
+        public async Task<List<User{name}>> QueryAsync(Select{name}ListQuery query, CancellationToken cancellationToken = default)
         {{
             using var user = userService.UserManager.LoadUser(query.Usn, true,
-                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode, ContentsOpen.None,
-                query.PacketCategory);
+                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
 
             if (resultCode != ResultCode.Success)
             {{
                 throw new WebAPIException(resultCode);
             }}
 
-            return await Task.Run(() =>
-            {{
-                var rows = user.DbContext.User{name}
-                    .Where(row => query.seq <= row.seq)
-                    .Where(row => query.Usn == row.usn);
+            var rows = await user.DbContext.User{name}
+                .Where(row => row.usn == query.Usn)
+                .ToListAsync(cancellationToken);
 
-                var {name}s = mapper.Map<List<{name}>>(rows);
-
-                return {name}s;
-            }});
+            return mapper.Map<List<User{name}>>(rows);
         }}
     }}
 
@@ -65,11 +59,12 @@ namespace NK.LobbyWebAPI.Queries
         public void Register(TypeAdapterConfig config)
         {{
             config
-                .NewConfig<UserDbContext.DB{name}, {name}>()
+                .NewConfig<UserDbContext.DBUser{name}, User{name}>()
                 .MapToConstructor(true);
         }}
     }}
 }}
+
 """
 
 exist_row = """using System.Linq;
@@ -77,15 +72,16 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Queries
+namespace NK.LobbyWebAPI.Feature.{name}
 {{
-    public sealed record Exist{name}Query(PacketActionAttribute.PacketCategory PacketCategory, long Usn, long seq) : IQuery;
+    public sealed record Exist{name}Query(long Usn, int {name}Id) : IQuery;
 
-    public class Exist{name}QueryHandler : IQueryHandler<Select{name}Query, bool>
+    public class Exist{name}QueryHandler : IQueryHandler<Exist{name}Query, bool>
     {{
         private readonly UserService userService;
 
@@ -94,26 +90,22 @@ namespace NK.LobbyWebAPI.Queries
             this.userService = userService;
         }}
 
-        public async Task<bool> QueryAsync(Select{name}Query query, CancellationToken cancellationToken = default)
+        public async Task<bool> QueryAsync(Exist{name}Query query, CancellationToken cancellationToken = default)
         {{
             using var user = userService.UserManager.LoadUser(query.Usn, true,
-                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode, ContentsOpen.None,
-                query.PacketCategory);
+                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
 
             if (resultCode != ResultCode.Success)
             {{
                 throw new WebAPIException(resultCode);
             }}
 
-            return await Task.Run(() =>
-            {{
-                var rows = user.DbContext.User{name}
-                    .Where(row => query.seq <= row.seq)
-                    .Where(row => query.Usn == row.usn)
-                    .FirstOrDefaultAsync(cancellationToken);
+            var row = await user.DbContext.User{name}
+                    .Where(row => row.usn == query.Usn)
+                    .Where(row => row.emergency_quest_id == query.{name}Id)
+                    .SingleOrDefaultAsync(cancellationToken);
 
-                return rows != null;
-            }});
+            return row != null;
         }}
     }}
 }}
@@ -123,12 +115,12 @@ namespace NK.LobbyWebAPI.Queries
 # ==================================================
 #   Main
 #   Set Arguments
-#       select_row
+#       select_row (x)
 #       select_rows
 #       exist_row
 # ==================================================
 query = exist_row
-name = "Reddot"
+name = "EmergencyQuest"
 ret_type = ""
 
 f = open(output_file_name, "w")
