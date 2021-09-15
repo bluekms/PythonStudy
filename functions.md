@@ -131,11 +131,35 @@ print(f"{3.141592:0.2}")    # 3.14
 <br>
 <br>
 <br>
+
 # collections
+
 https://docs.python.org/3.11/library/collections.html
 
 ## namedtuple
 명명된 필드를 가지는 튜플클래스 생성
+```
+from collections import namedtuple
+
+Point = namedtuple("Point", ["x", "y"])
+p = Point(11, y=22)
+print(p.x + p.y)
+print(p[0] + p[1])
+
+# unpacking
+i, j = p
+print(i + j)
+
+p.count(200)    # 해당 아이템의 수 반환
+p.index(100)    # 해당 아이템의 인덱스 반환
+p._replace(x = 1000)    # 새 namedtuple 생성
+p._asdict() # {'x': 11, 'y': 22}
+p._fields   # ('x', 'y')
+
+기술명세 = namedtuple("기술", ["기술이름", "자격증", "연차"])
+강민석 = 기술명세("파이썬", "정보처리기사", 8)
+print(강민석)
+```
 
 ## deque
 양 끝에서 추가와 삭제
@@ -164,5 +188,7 @@ String을 만드는 부모클래스
 <br>
 <br>
 <br>
+
 # 정적 타입 선언
+
 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=passion053&logNo=221070020739
