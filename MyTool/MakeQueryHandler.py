@@ -109,7 +109,32 @@ namespace NK.LobbyWebAPI.Feature.{name}
         }}
     }}
 }}
+"""
 
+get_staticdata = """using System.Threading;
+using System.Threading.Tasks;
+using NK.LobbyWebAPI.Queries;
+using NK.Network.Packet;
+using NK.StaticData;
+
+namespace NK.LobbyWebAPI.Feature.{name}
+{{
+    public sealed record Get{name}StaticDataQuery(int {name}Id) : IQuery;
+
+    public class Get{name}StaticDataQueryHandler : IQueryHandler<Get{name}StaticDataQuery, {name}Record>
+    {{
+        public async Task<{name}Record> QueryAsync(Get{name}StaticDataQuery query, CancellationToken cancellationToken = default)
+        {{
+            var staticData = await Task.Run(() => DataManager.Instance.Get{name}Table().Find(query.{name}Id), cancellationToken);
+            if (staticData == null)
+            {{
+                throw new WebAPIException(ResultCode.Failure_StaticData_Not_Exist_{name});
+            }}
+
+            return staticData;
+        }}
+    }}
+}}
 """
 
 # ==================================================
@@ -118,11 +143,12 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       select_row (x)
 #       select_rows
 #       exist_row
+#       get_staticdata
 # ==================================================
-query = exist_row
+query = get_staticdata
 name = "EmergencyQuest"
 ret_type = ""
 
 f = open(output_file_name, "w")
-f.write(query.format(name = name, ret_type = ret_type))
+f.write(query.format(name=name, ret_type=ret_type))
 f.close()
