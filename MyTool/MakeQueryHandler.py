@@ -146,7 +146,7 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       get_staticdata
 # ==================================================
 query = get_staticdata
-name = "EmergencyQuest"
+name = "EmergencyStage"
 ret_type = ""
 
 f = open(output_file_name, "w")
