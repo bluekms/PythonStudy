@@ -59,7 +59,11 @@ namespace NK.LobbyWebAPI.Controllers.v1
                     }};
                 }}
 
-                return mapper.Map<ResGet{name}Data>(res);
+                return new ResGet{name}Data
+                {
+                    result = ResultCode.Success,
+                    CommonData = res.CommonData,
+                };
             }}
             catch (WebAPIException webApiException)
             {{
@@ -156,9 +160,9 @@ namespace NK.LobbyWebAPI.Feature.{name}
 name = "EmergencyQuest"
 
 f = open(controller_file_name, "w")
-f.write(controller.format(name = name, name_lower = name.lower()))
+f.write(controller.format(name=name, name_lower=name.lower()))
 f.close()
 
 f = open(queryhandler_file_name, "w")
-f.write(query_handler.format(name = name))
+f.write(query_handler.format(name=name))
 f.close()

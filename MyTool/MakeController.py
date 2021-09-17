@@ -59,6 +59,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
                 return new Res{name}
                 {{
                     result = ResultCode.Success,
+                    CommonData = res.CommonData,
                 }};
             }}
             catch (WebAPIException webApiException)
@@ -268,7 +269,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       currency_controller
 # ==================================================
 query = void_controller
-name = "TouchEmergencyQuestNpc"
+name = "TouchEmergencyQuestInteractionObject"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, name_lower=name.lower()))
