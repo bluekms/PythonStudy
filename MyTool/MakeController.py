@@ -58,7 +58,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 
                 return new Res{name}
                 {{
-                    result = ResultCode.Failure_SystemError,
+                    result = ResultCode.Success,
                 }};
             }}
             catch (WebAPIException webApiException)
@@ -268,7 +268,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       currency_controller
 # ==================================================
 query = void_controller
-name = "ClearEmergencyQuestStage"
+name = "TouchEmergencyQuestNpc"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, name_lower=name.lower()))

@@ -117,7 +117,7 @@ using NK.LobbyWebAPI.Queries;
 using NK.Network.Packet;
 using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Feature.{name}
+namespace NK.LobbyWebAPI.Feature.StaticData
 {{
     public sealed record Get{name}StaticDataQuery(int {name}Id) : IQuery;
 
@@ -146,7 +146,7 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       get_staticdata
 # ==================================================
 query = get_staticdata
-name = "EmergencyStage"
+name = "FieldMap"
 ret_type = ""
 
 f = open(output_file_name, "w")

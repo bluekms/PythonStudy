@@ -48,7 +48,7 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 # ==================================================
 query = rule_checker
-name = "EnterEmergencyQuestStage"
+name = "TouchEmergencyQuestNpc"
 feature = "EmergencyQuest"
 
 f = open(output_file_name, "w")
