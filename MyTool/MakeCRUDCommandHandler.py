@@ -107,47 +107,50 @@ namespace NK.LobbyWebAPI.Commands
 }}
 """
 
-update_row_int = """using System.Collections.Generic;
+update_row_void = """using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
-using NK.LobbyWebAPI.Queries;
+using Microsoft.EntityFrameworkCore;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Commands
 {{
-    public sealed record Update{table_name}Command(
-        PacketActionAttribute.PacketCategory PacketCategory,
-        long Usn) : ICommand;
+    public sealed record Update{name}{target_name}Command(
+        long Usn,
+        int {name}Id) : ICommand;
 
-    public class Update{table_name}CommandHandler : ICommandHandler<Update{table_name}Command, int>
+    public class Update{name}{target_name}CommandHandler : ICommandHandler<Update{name}{target_name}Command>
     {{
         private readonly UserService userService;
-        private readonly IQueryHandler<SelectCharacterCostumeRowsQuery, List<int>> selectCharacterCostume;
 
-        public Update{table_name}CommandHandler(UserService userService, IQueryHandler<SelectCharacterCostumeRowsQuery, List<int>> selectCharacterCostume)
+        public Update{name}{target_name}CommandHandler(UserService userService)
         {{
             this.userService = userService;
-            this.selectCharacterCostume = selectCharacterCostume;
         }}
 
-        public async Task<int> ExecuteAsync(Update{table_name}Command command, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(Update{name}{target_name}Command command)
         {{
-            using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}",
-                out var resultCode, ContentsOpen.None, command.PacketCategory);
-
+            using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}", out var resultCode, ContentsOpen.{name});
             if (resultCode != ResultCode.Success)
             {{
                 throw new WebAPIException(resultCode);
             }}
 
+            var row = await user.DbContext.User{name}
+                .Where(row => row.usn == command.Usn)
+                .Where(row => row.emergency_quest_id == command.{name}Id)
+                .SingleOrDefaultAsync();
+
+            if (row == null)
+            {{
+                throw new WebAPIException(ResultCode.Failure_{name}_Not_Exist_Quest);
+            }}
+
             // TODO
 
             await user.DbContext.SaveChangesAsync();
-
-            return nextLv;
         }}
     }}
 }}
@@ -158,11 +161,12 @@ namespace NK.LobbyWebAPI.Commands
 #   Set Arguments
 #       insert_row (new)
 #       delete_row (new)
-#       update_row_int
+#       update_row_void (new)
 # ==================================================
-query = delete_row
-table_name = "EmergencyQuest"
+query = update_row_void
+name = "EmergencyQuest"
+target_name = "UserValue"
 
 f = open(output_file_name, "w")
-f.write(query.format(table_name=table_name))
+f.write(query.format(name=name, target_name=target_name))
 f.close()
