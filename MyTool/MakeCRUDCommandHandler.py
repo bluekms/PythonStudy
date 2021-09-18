@@ -165,7 +165,7 @@ namespace NK.LobbyWebAPI.Commands
 # ==================================================
 query = update_row_void
 name = "EmergencyQuest"
-target_name = "UserValue"
+target_name = "IsReceived"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, target_name=target_name))
