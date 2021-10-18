@@ -165,16 +165,17 @@ print(강민석)
 양 끝에서 추가와 삭제
 
 ## ChainMap
-여러개의 컨테이너를 묶을 수 있음
+여러 컨테이너들의 특징을 유지한 체 합칠수 있음
 
 ## Counter
 구성요소의 수를 셈
 
 ## OrderedDict
-순서있는 Dict
+순서있는 Dict (3.7부터 순서 유지)
+LRU 구현할때 쓰임
 
-## defaultdict
-키가 없을 때 기본값
+## defaultdict(Type)
+키가 호출될 때 값이 없다면 기본값을 넣음
 
 ## UserDict
 Dict를 만드는 부모클래스
