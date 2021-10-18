@@ -269,7 +269,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       currency_controller
 # ==================================================
 query = void_controller
-name = "TouchEmergencyQuestInteractionObject"
+name = "ListMail"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, name_lower=name.lower()))

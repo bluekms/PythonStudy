@@ -32,8 +32,8 @@ namespace NK.LobbyWebAPI.Feature.{name}
 
         public Select{name}ListQueryHandler(UserService userService, IMapper mapper)
         {{
-            this.userService = userService;
             this.mapper = mapper;
+            this.userService = userService;
         }}
 
         public async Task<List<User{name}>> QueryAsync(Select{name}ListQuery query, CancellationToken cancellationToken = default)
@@ -64,7 +64,6 @@ namespace NK.LobbyWebAPI.Feature.{name}
         }}
     }}
 }}
-
 """
 
 exist_row = """using System.Linq;
@@ -118,8 +117,8 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       select_rows
 #       exist_row
 # ==================================================
-query = exist_row
-name = "EmergencyQuest"
+query = select_rows
+name = "GameManagerGuildMails"
 ret_type = ""
 
 f = open(output_file_name, "w")

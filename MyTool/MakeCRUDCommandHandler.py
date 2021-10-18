@@ -33,17 +33,17 @@ namespace NK.LobbyWebAPI.Commands
                 throw new WebAPIException(resultCode);
             }}
 
-            var staticQuest = DataManager.Instance.Get{name}Table().Find(command.{name}Id);
-            if (staticQuest == null)
+            var static = DataManager.Instance.Get{name}Table().Find(command.{name}Id);
+            if (static == null)
             {{
                 throw new WebAPIException(ResultCode.Failure_StaticData_Not_Exist_{name});
             }}
 
-            user.DbContext.User{name}.Add(new UserDbContext.DBUser{name}
+            user.DbContext.{name}.Add(new UserDbContext.DB{name}
             {{
                 usn = command.Usn,
                 user_value = 0,
-                clear_value = staticQuest.Clear_condition_value,
+                clear_value = static.Clear_condition_value,
                 is_received = false,
             }});
 
@@ -62,20 +62,20 @@ using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Commands
 {{
-    public sealed record Delete{name}QuestCommand(
+    public sealed record Delete{name}Command(
         long Usn,
-        int {name}QuestId) : ICommand;
+        int {name}Id) : ICommand;
 
-    public class Delete{name}QuestCommandHandler : ICommandHandler<Delete{name}QuestCommand>
+    public class Delete{name}CommandHandler : ICommandHandler<Delete{name}Command>
     {{
         private readonly UserService userService;
 
-        public Delete{name}QuestCommandHandler(UserService userService)
+        public Delete{name}CommandHandler(UserService userService)
         {{
             this.userService = userService;
         }}
 
-        public async Task ExecuteAsync(Delete{name}QuestCommand command)
+        public async Task ExecuteAsync(Delete{name}Command command)
         {{
             using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}", out var resultCode);
             if (resultCode != ResultCode.Success)
@@ -83,23 +83,23 @@ namespace NK.LobbyWebAPI.Commands
                 throw new WebAPIException(resultCode);
             }}
 
-            var staticQuest = DataManager.Instance.Get{name}QuestTable().Find(command.{name}QuestId);
-            if (staticQuest == null)
+            var static = DataManager.Instance.Get{name}Table().Find(command.{name}Id);
+            if (static == null)
             {{
-                throw new WebAPIException(ResultCode.Failure_StaticData_Not_Exist_{name}Quest);
+                throw new WebAPIException(ResultCode.Failure_StaticData_Not_Exist_{name});
             }}
 
-            var row = user.DbContext.User{name}Quest
+            var row = await user.DbContext.User{name}
                 .Where(row => row.usn == command.Usn)
-                .Where(row => row.{name}_quest_id == command.{name}QuestId)
-                .SingleOrDefault();
+                .Where(row => row.{name}__id == command.{name}Id)
+                .SingleOrDefaultAsync();
 
             if (row == null)
             {{
-                throw new WebAPIException(ResultCode.Failure_{name}Quest_Not_Exist_Quest);
+                throw new WebAPIException(ResultCode.Failure_{name}_Not_Exist_);
             }}
 
-            user.DbContext.User{name}Quest.Remove(row);
+            user.DbContext.User{name}.Remove(row);
 
             await user.DbContext.SaveChangesAsync();
         }}
@@ -140,12 +140,12 @@ namespace NK.LobbyWebAPI.Commands
 
             var row = await user.DbContext.User{name}
                 .Where(row => row.usn == command.Usn)
-                .Where(row => row.emergency_quest_id == command.{name}Id)
+                .Where(row => row.emergency_id == command.{name}Id)
                 .SingleOrDefaultAsync();
 
             if (row == null)
             {{
-                throw new WebAPIException(ResultCode.Failure_{name}_Not_Exist_Quest);
+                throw new WebAPIException(ResultCode.Failure_{name}_Not_Exist_);
             }}
 
             // TODO
@@ -159,13 +159,13 @@ namespace NK.LobbyWebAPI.Commands
 # ==================================================
 #   Main
 #   Set Arguments
-#       insert_row (new)
+#       insert_row
 #       delete_row (new)
 #       update_row_void (new)
 # ==================================================
-query = update_row_void
-name = "EmergencyQuest"
-target_name = "IsReceived"
+query = insert_row
+name = "UserMail"
+target_name = "ReddotSeq"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, target_name=target_name))
