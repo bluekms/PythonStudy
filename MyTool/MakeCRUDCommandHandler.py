@@ -5,12 +5,12 @@ output_file_name = "./MyTool/build/CommandHandler.cs"
 
 insert_row = """using System.Reflection;
 using System.Threading.Tasks;
+using NK.LobbyWebAPI.Commands;
 using NK.LobbyWebAPI.Models;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
-using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Commands
+namespace NK.LobbyWebAPI.Feature.{name}
 {{
     public sealed record Insert{name}Command(
         long Usn,
@@ -56,11 +56,12 @@ namespace NK.LobbyWebAPI.Commands
 delete_row = """using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using NK.LobbyWebAPI.Commands;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Commands
+namespace NK.LobbyWebAPI.Feature.{name}
 {{
     public sealed record Delete{name}Command(
         long Usn,
@@ -115,7 +116,7 @@ using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Commands
+namespace NK.LobbyWebAPI.Feature.{name}
 {{
     public sealed record Update{name}{target_name}Command(
         long Usn,
@@ -163,9 +164,9 @@ namespace NK.LobbyWebAPI.Commands
 #       delete_row (new)
 #       update_row_void (new)
 # ==================================================
-query = insert_row
-name = "UserMail"
-target_name = "ReddotSeq"
+query = update_row_void
+name = "ObtainMessageReward"
+target_name = ""
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, target_name=target_name))

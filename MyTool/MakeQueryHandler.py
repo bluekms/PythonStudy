@@ -118,7 +118,7 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       exist_row
 # ==================================================
 query = select_rows
-name = "GameManagerGuildMails"
+name = ""
 ret_type = ""
 
 f = open(output_file_name, "w")
