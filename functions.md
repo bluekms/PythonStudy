@@ -133,7 +133,6 @@ print(f"{3.141592:0.2}")    # 3.14
 <br>
 
 # collections
-
 https://docs.python.org/3.11/library/collections.html
 
 ## namedtuple
@@ -178,14 +177,57 @@ LRU 구현할때 쓰임
 키가 호출될 때 값이 없다면 기본값을 넣음
 
 ## UserDict
-Dict를 만드는 부모클래스
+상속하여 사용하는 Dict
 
 ## UserList
-List를 만드는 부모클래스
+상속하여 사용하는 List
 
 ## UserString
-String을 만드는 부모클래스
+상속하여 사용하는 String
 
+## groupby sum
+```
+import itertools
+
+expenditure = [
+    ("호준", 1000000),
+    ("호중", 100000),
+    ("길동", 300000),
+    ("호준", 100000),
+    ("길동", 10000),
+    ("길동", 10000),
+]
+# 정렬되어 있지 않으면 묶이지 않는다
+expenditure = sorted(expenditure, key=lambda x: x[0])
+
+for name, total in itertools.groupby(expenditure, lambda x: x[0]):
+    print(f"{name} : {sum([i[1] for i in total])}")
+```
+
+## itertools.zip_longest
+```
+import itertools
+
+print(itertools.zip_longest("ABCD", "xy", fillvalue="-"))
+```
+
+## 모든 경우의 수
+import collections와 조합되어 특정 요소의 수를 세는 형태로 많이 쓴다 (set보다는)
+```
+import itertools
+
+# 곱 - 중복원소 포함 (A, A)
+print(list(itertools.product("ABC", repeat = 2)))
+
+# 순열 - 중복 (A, B) != (B, A)
+print(list(itertools.permutations("ABC", 2)))
+
+# 조합 - 중복 없고 (A, B) == (B, A)
+print(list(itertools.combinations("ABC", 2)))
+
+# 조합 - 중복 가능
+print(list(itertools.combinations_with_replacement("ABC", 2)))
+```
 <br>
 <br>
 <br>
