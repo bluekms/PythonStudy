@@ -21,22 +21,22 @@ using NK.Network.Packet;
 
 namespace NK.LobbyWebAPI.Feature.{name}
 {{
-    public sealed record Select{name}ListQuery(long Usn) : IQuery;
+    public sealed record {name}Query(long Usn) : IQuery;
 
     public sealed record User{name}(int {name}Id, int UserValue, bool IsReceived);
 
-    public class Select{name}ListQueryHandler : IQueryHandler<Select{name}ListQuery, List<User{name}>>
+    public class {name}QueryHandler : IQueryHandler<{name}Query, List<User{name}>>
     {{
         private readonly IMapper mapper;
         private readonly UserService userService;
 
-        public Select{name}ListQueryHandler(UserService userService, IMapper mapper)
+        public {name}QueryHandler(UserService userService, IMapper mapper)
         {{
             this.mapper = mapper;
             this.userService = userService;
         }}
 
-        public async Task<List<User{name}>> QueryAsync(Select{name}ListQuery query, CancellationToken cancellationToken = default)
+        public async Task<List<User{name}>> QueryAsync({name}Query query, CancellationToken cancellationToken = default)
         {{
             using var user = userService.UserManager.LoadUser(query.Usn, true,
                 $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
@@ -47,7 +47,7 @@ namespace NK.LobbyWebAPI.Feature.{name}
             }}
 
             var rows = await user.DbContext.User{name}
-                .Where(row => row.usn == query.Usn)
+                .Where(row => row.Usn == query.Usn)
                 .ToListAsync(cancellationToken);
 
             return mapper.Map<List<User{name}>>(rows);
@@ -78,7 +78,9 @@ using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Feature.{name}
 {{
-    public sealed record Exist{name}Query(long Usn, int {name}Id) : IQuery;
+    public sealed record Exist{name}Query(
+        long Usn,
+        int {name}Id) : IQuery;
 
     public class Exist{name}QueryHandler : IQueryHandler<Exist{name}Query, bool>
     {{
@@ -100,7 +102,7 @@ namespace NK.LobbyWebAPI.Feature.{name}
             }}
 
             var row = await user.DbContext.User{name}
-                    .Where(row => row.usn == query.Usn)
+                    .Where(row => row.Usn == query.Usn)
                     .Where(row => row.emergency_quest_id == query.{name}Id)
                     .SingleOrDefaultAsync(cancellationToken);
 
@@ -113,13 +115,12 @@ namespace NK.LobbyWebAPI.Feature.{name}
 # ==================================================
 #   Main
 #   Set Arguments
-#       select_row (x)
 #       select_rows
 #       exist_row
 # ==================================================
-query = select_rows
-name = ""
-ret_type = ""
+query = exist_row
+name = "Messenger"
+ret_type = "string"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, ret_type=ret_type))

@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NK.LobbyWebAPI.Feature.Common;
 using NK.LobbyWebAPI.Queries;
-using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.Network.Packet.Lobby;
 
@@ -23,22 +22,19 @@ namespace NK.LobbyWebAPI.Controllers.v1
     {{
         private sealed record RequestWrapper(long Usn);
 
-        private sealed record ResponseWrapper(NetCommonData CommonData);
+        private sealed record ResponseWrapper(ResultCode Result, NetCommonData CommonData);
 
         private readonly ILogger logger;
         private readonly IMapper mapper;
-        private readonly UserService userService;
         private readonly IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData;
 
         public {_name}Controller(
-            ILogger logger,
+            ILogger<{_name}Controller> logger,
             IMapper mapper,
-            UserService userService,
             IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData)
         {{
             this.logger = logger;
             this.mapper = mapper;
-            this.userService = userService;
             this.getCommonData = getCommonData;
         }}
 
@@ -58,11 +54,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
                     }};
                 }}
 
-                return new Res{_name}
-                {{
-                    Result = ResultCode.Success,
-                    CommonData = res.CommonData,
-                }};
+                return mapper.Map<Res{_name}>(res);
             }}
             catch (WebAPIException webApiException)
             {{
@@ -86,7 +78,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
         {{
             var commonData = await getCommonData.QueryAsync(new(request.Usn), cancellationToken);
 
-            return new(commonData);
+            return new(ResultCode.Success, commonData);
         }}
     }}
 }}
@@ -98,7 +90,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       void_controller
 # ==================================================
 query = void_controller
-_name = "ObtainMessageReward"
+_name = "SyncSubQuest"
 
 f = open(output_file_name, "w")
 f.write(query.format(_name=_name, name_lower=_name.lower()))
