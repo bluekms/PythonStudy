@@ -133,20 +133,20 @@ namespace NK.LobbyWebAPI.Feature.{name}
 
         public async Task ExecuteAsync(Update{name}{target_name}Command command)
         {{
-            using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}", out var resultCode, ContentsOpen.{name});
+            using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}", out var resultCode);
             if (resultCode != ResultCode.Success)
             {{
                 throw new WebAPIException(resultCode);
             }}
 
             var row = await user.DbContext.User{name}
-                .Where(row => row.usn == command.Usn)
+                .Where(row => row.Usn == command.Usn)
                 .Where(row => row.emergency_id == command.{name}Id)
                 .SingleOrDefaultAsync();
 
             if (row == null)
             {{
-                throw new WebAPIException(ResultCode.Failure_{name}_Not_Exist_);
+                throw new WebAPIException(ResultCode.FailureDbUserNotExistUsn);
             }}
 
             // TODO
@@ -161,11 +161,11 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #   Main
 #   Set Arguments
 #       insert_row
-#       delete_row (new)
+#       delete_row
 #       update_row_void (new)
 # ==================================================
 query = update_row_void
-name = "ObtainMessageReward"
+name = "TutorialId"
 target_name = ""
 
 f = open(output_file_name, "w")

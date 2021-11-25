@@ -19,7 +19,7 @@ using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 
-namespace NK.LobbyWebAPI.Feature.{name}
+namespace NK.LobbyWebAPI.Feature.{feature}
 {{
     public sealed record {name}Query(long Usn) : IQuery;
 
@@ -76,7 +76,7 @@ using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.StaticData;
 
-namespace NK.LobbyWebAPI.Feature.{name}
+namespace NK.LobbyWebAPI.Feature.{feature}
 {{
     public sealed record Exist{name}Query(
         long Usn,
@@ -118,10 +118,11 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       select_rows
 #       exist_row
 # ==================================================
-query = exist_row
-name = "Messenger"
+query = select_rows
+feature = "Stage"
+name = "HasChapterBossEntered"
 ret_type = "string"
 
 f = open(output_file_name, "w")
-f.write(query.format(name=name, ret_type=ret_type))
+f.write(query.format(name=name, ret_type=ret_type, feature=feature))
 f.close()

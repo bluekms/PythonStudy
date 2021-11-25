@@ -18,7 +18,7 @@ using NK.Network.Packet.Lobby;
 namespace NK.LobbyWebAPI.Controllers.v1
 {{
     [ApiController]
-    public class {_name}Controller : Controller
+    public class {_name}Controller : ControllerBase
     {{
         private sealed record RequestWrapper(long Usn);
 
@@ -58,7 +58,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
             }}
             catch (WebAPIException webApiException)
             {{
-                logger.LogError(webApiException, "{{name}} failed. Request: {{Request}}", MethodBase.GetCurrentMethod().Name, request);
+                logger.LogError(webApiException, "{{name}} failed. Request: {{@Request}}", MethodBase.GetCurrentMethod().Name, request);
                 return new Res{_name}
                 {{
                     Result = webApiException.ResultCode,
@@ -66,7 +66,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
             }}
             catch (Exception ex)
             {{
-                logger.LogError(ex, "{{name}} failed. Request: {{Request}}", MethodBase.GetCurrentMethod()?.Name, request);
+                logger.LogError(ex, "{{name}} failed. Request: {{@Request}}", MethodBase.GetCurrentMethod()?.Name, request);
                 return new Res{_name}
                 {{
                     Result = ResultCode.FailureSystemError,
@@ -90,7 +90,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       void_controller
 # ==================================================
 query = void_controller
-_name = "SyncSubQuest"
+_name = "SaveTutorial"
 
 f = open(output_file_name, "w")
 f.write(query.format(_name=_name, name_lower=_name.lower()))
