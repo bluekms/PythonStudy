@@ -18,6 +18,7 @@ using NK.Network.Packet.Lobby;
 namespace NK.LobbyWebAPI.Controllers.v1
 {{
     [ApiController]
+    [Authorize(NKPolicy.TokenWithSessionKey)]
     public class {_name}Controller : ControllerBase
     {{
         private sealed record RequestWrapper(long Usn);
@@ -90,7 +91,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       void_controller
 # ==================================================
 query = void_controller
-_name = "SaveTutorial"
+_name = "SetLastLogin"
 
 f = open(output_file_name, "w")
 f.write(query.format(_name=_name, name_lower=_name.lower()))

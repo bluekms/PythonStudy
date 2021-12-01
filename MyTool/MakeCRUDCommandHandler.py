@@ -3,12 +3,14 @@
 # ==================================================
 output_file_name = "./MyTool/build/CommandHandler.cs"
 
-insert_row = """using System.Reflection;
+insert_row = """using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NK.LobbyWebAPI.Commands;
-using NK.LobbyWebAPI.Models;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
+using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Feature.{name}
 {{
@@ -112,6 +114,7 @@ update_row_void = """using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using NK.LobbyWebAPI.Commands;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
 using NK.StaticData;
@@ -165,7 +168,7 @@ namespace NK.LobbyWebAPI.Feature.{name}
 #       update_row_void (new)
 # ==================================================
 query = update_row_void
-name = "TutorialId"
+name = "AllEmergencyQuestDate"
 target_name = ""
 
 f = open(output_file_name, "w")
