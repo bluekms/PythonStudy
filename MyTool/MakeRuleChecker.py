@@ -28,11 +28,11 @@ namespace NK.LobbyWebAPI.Feature.{feature}
         public async Task CheckAsync({name}Rule rule, CancellationToken cancellationToken = default)
         {{
             using var user = userService.UserManager.LoadUser(rule.Usn, true,
-                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod().Name}}", out var resultCode);
+                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
 
             var row = await user.DbContext.User{feature}
-                .Where(row => row.usn == rule.Usn)
-                .Where(row => row.emergency_quest_id == rule.{feature}Id)
+                .Where(row => row.Usn == rule.Usn)
+                .Where(row => row.Id == rule.{feature}Id)
                 .SingleOrDefaultAsync(cancellationToken);
 
             if (row == null)
@@ -48,8 +48,8 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 # ==================================================
 query = rule_checker
-name = "TouchEmergencyQuestNpc"
-feature = "EmergencyQuest"
+name = "UpdateRewarded"
+feature = "Trigger2"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, feature=feature))

@@ -11,10 +11,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using NK.LobbyWebAPI.Models;
 using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
@@ -23,20 +21,20 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 {{
     public sealed record {name}Query(long Usn) : IQuery;
 
-    public sealed record User{name}(int {name}Id, int UserValue, bool IsReceived);
+    public sealed record {ret_type}(int {name}Id, int UserValue, bool IsReceived);
 
-    public class {name}QueryHandler : IQueryHandler<{name}Query, List<User{name}>>
+    public class {name}Handler : IQueryHandler<{name}Query, List<{ret_type}>>
     {{
         private readonly IMapper mapper;
         private readonly UserService userService;
 
-        public {name}QueryHandler(UserService userService, IMapper mapper)
+        public {name}Handler(UserService userService, IMapper mapper)
         {{
             this.mapper = mapper;
             this.userService = userService;
         }}
 
-        public async Task<List<User{name}>> QueryAsync({name}Query query, CancellationToken cancellationToken = default)
+        public async Task<List<{ret_type}>> QueryAsync({name}Query query, CancellationToken cancellationToken = default)
         {{
             using var user = userService.UserManager.LoadUser(query.Usn, true,
                 $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
@@ -46,35 +44,33 @@ namespace NK.LobbyWebAPI.Feature.{feature}
                 throw new WebAPIException(resultCode);
             }}
 
-            var rows = await user.DbContext.User{name}
+            var rows = await user.DbContext.{name}
                 .Where(row => row.Usn == query.Usn)
                 .ToListAsync(cancellationToken);
+                // .FindAsync(new object[] {{ query.Usn, query.{name}Id }}, cancellationToken);
 
-            return mapper.Map<List<User{name}>>(rows);
+            return mapper.Map<List<{ret_type}>>(rows);
         }}
     }}
 
-    internal sealed class {name}Register : IRegister
+    internal sealed class {ret_type}Register : IRegister
     {{
         public void Register(TypeAdapterConfig config)
         {{
             config
-                .NewConfig<UserDbContext.DBUser{name}, User{name}>()
+                .NewConfig<UserDbContext.DBUser{name}, {ret_type}>()
                 .MapToConstructor(true);
         }}
     }}
 }}
 """
 
-exist_row = """using System.Linq;
-using System.Reflection;
+exist_row = """using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NK.LobbyWebAPI.Queries;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
-using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Feature.{feature}
 {{
@@ -82,11 +78,11 @@ namespace NK.LobbyWebAPI.Feature.{feature}
         long Usn,
         int {name}Id) : IQuery;
 
-    public class Exist{name}QueryHandler : IQueryHandler<Exist{name}Query, bool>
+    public class Exist{name}Handler : IQueryHandler<Exist{name}Query, bool>
     {{
         private readonly UserService userService;
 
-        public Exist{name}QueryHandler(UserService userService)
+        public Exist{name}Handler(UserService userService)
         {{
             this.userService = userService;
         }}
@@ -102,9 +98,7 @@ namespace NK.LobbyWebAPI.Feature.{feature}
             }}
 
             var row = await user.DbContext.User{name}
-                    .Where(row => row.Usn == query.Usn)
-                    .Where(row => row.emergency_quest_id == query.{name}Id)
-                    .SingleOrDefaultAsync(cancellationToken);
+                .FindAsync(new object[] {{ query.Usn, query.{name}Id }}, cancellationToken);
 
             return row != null;
         }}
@@ -119,9 +113,9 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #       exist_row
 # ==================================================
 query = select_rows
-feature = "Stage"
-name = "HasChapterBossEntered"
-ret_type = "string"
+feature = "MainQuest"
+name = "GetUserMainQuest"
+ret_type = "UserMainQuest"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, ret_type=ret_type, feature=feature))

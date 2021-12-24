@@ -8,14 +8,16 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NK.LobbyWebAPI.Authorization;
 using NK.LobbyWebAPI.Feature.Common;
 using NK.LobbyWebAPI.Queries;
 using NK.Network.Packet;
 using NK.Network.Packet.Lobby;
 
-namespace NK.LobbyWebAPI.Controllers.v1
+namespace NK.LobbyWebAPI.Controllers.{feature}
 {{
     [ApiController]
     [Authorize(NKPolicy.TokenWithSessionKey)]
@@ -59,7 +61,7 @@ namespace NK.LobbyWebAPI.Controllers.v1
             }}
             catch (WebAPIException webApiException)
             {{
-                logger.LogError(webApiException, "{{name}} failed. Request: {{@Request}}", MethodBase.GetCurrentMethod().Name, request);
+                logger.LogError(webApiException, "{{name}} failed. Request: {{@Request}}", MethodBase.GetCurrentMethod()?.Name, request);
                 return new Res{_name}
                 {{
                     Result = webApiException.ResultCode,
@@ -91,8 +93,9 @@ namespace NK.LobbyWebAPI.Controllers.v1
 #       void_controller
 # ==================================================
 query = void_controller
-_name = "SetLastLogin"
+feature = "Trigger2"
+_name = "EnterOutpostEvent"
 
 f = open(output_file_name, "w")
-f.write(query.format(_name=_name, name_lower=_name.lower()))
+f.write(query.format(_name=_name, name_lower=_name.lower(), feature=feature))
 f.close()
