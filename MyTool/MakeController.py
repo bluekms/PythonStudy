@@ -94,7 +94,7 @@ namespace NK.LobbyWebAPI.Controllers.{feature}
 # ==================================================
 query = void_controller
 feature = "Trigger2"
-_name = "EnterOutpostEvent"
+_name = "ObtainAchievementReward"
 
 f = open(output_file_name, "w")
 f.write(query.format(_name=_name, name_lower=_name.lower(), feature=feature))

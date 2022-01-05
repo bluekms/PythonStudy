@@ -48,7 +48,7 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 # ==================================================
 query = rule_checker
-name = "UpdateRewarded"
+name = "ObtainAchievementReward"
 feature = "Trigger2"
 
 f = open(output_file_name, "w")

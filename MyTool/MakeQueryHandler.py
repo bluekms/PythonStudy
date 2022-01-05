@@ -113,9 +113,9 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #       exist_row
 # ==================================================
 query = select_rows
-feature = "MainQuest"
-name = "GetUserMainQuest"
-ret_type = "UserMainQuest"
+feature = "Trigger2"
+name = "ListTrigger"
+ret_type = "UserTrigger2"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, ret_type=ret_type, feature=feature))
