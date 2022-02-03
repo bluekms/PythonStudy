@@ -27,12 +27,15 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 
         public async Task CheckAsync({name}Rule rule, CancellationToken cancellationToken = default)
         {{
-            using var user = userService.UserManager.LoadUser(rule.Usn, true,
-                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
+            using var user = userService.UserManager.LoadUser(rule.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
+            if (resultCode != ResultCode.Success)
+            {{
+                throw new WebAPIException(resultCode);
+            }}
 
             var row = await user.DbContext.User{feature}
                 .Where(row => row.Usn == rule.Usn)
-                .Where(row => row.Id == rule.{feature}Id)
+                .Where(row => row.{feature}Id == rule.{feature}Id)
                 .SingleOrDefaultAsync(cancellationToken);
 
             if (row == null)
@@ -48,8 +51,8 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 # ==================================================
 query = rule_checker
-name = "ObtainAchievementReward"
-feature = "Trigger2"
+feature = "SubQuest"
+name = "SetTriggerFromSubQuest"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, feature=feature))

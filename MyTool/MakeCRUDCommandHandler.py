@@ -157,13 +157,13 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 # ==================================================
 #   Main
 #   Set Arguments
-#       insert_row (new)
+#       insert_row
 #       delete_row
-#       update_row_void (new)
+#       update_row_void
 # ==================================================
 query = insert_row
-feature = "Trigger2"
-name = "Rewarded"
+feature = "SubQuest"
+name = "SubQuest"
 target_name = ""
 
 f = open(output_file_name, "w")

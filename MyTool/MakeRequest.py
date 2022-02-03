@@ -30,7 +30,7 @@ Foo = """public async UniTask<Res{name}> Request{name}Async(, Action<Res{name}> 
 #       Foo
 # ==================================================
 query = Foo
-name = "GetAchievementRewardedData"
+name = "SubQuestMessengerTriggersRuleCheckerRule"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name))

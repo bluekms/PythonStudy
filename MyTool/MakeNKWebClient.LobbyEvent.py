@@ -8,16 +8,16 @@ simple_packet = """public async UniTask<Res{name}> Request{name}Async(Action<Res
     var res = await NetworkManager.Instance.Client.SendAsync<Res{name}>(
         new Req{name}
         {{
-            usn = NKUserData.AccountData.USN,
+            Usn = NKUserData.AccountData.USN,
         }});
 
-    if (res.result == ResultCode.Success)
+    if (res.Result == ResultCode.Success)
     {{
         handler?.Invoke(res);
     }}
     else
     {{
-        NKWebClientManager.Instance.OnCommonError(res.ProtocolId, res.result);
+        NKWebClientManager.Instance.OnCommonError(res.ProtocolId, res.Result);
     }}
 
     return res;
@@ -29,16 +29,16 @@ packet = """public async UniTask<Res{name}> Request{name}Async({args}, Action<Re
     var res = await NetworkManager.Instance.Client.SendAsync<Res{name}>(
         new Req{name}
         {{
-            usn = NKUserData.AccountData.USN,
+            Usn = NKUserData.AccountData.USN,
         }});
 
-    if (res.result == ResultCode.Success)
+    if (res.Result == ResultCode.Success)
     {{
         handler?.Invoke(res);
     }}
     else
     {{
-        NKWebClientManager.Instance.OnCommonError(res.ProtocolId, res.result);
+        NKWebClientManager.Instance.OnCommonError(res.ProtocolId, res.Result);
     }}
 
     return res;
@@ -51,8 +51,8 @@ packet = """public async UniTask<Res{name}> Request{name}Async({args}, Action<Re
 #       packet
 # ==================================================
 query = packet
-name = "TouchEmergencyQuestInteractionObject"
-args = "string positionId"
+name = "EnrollmentSubQuest"
+args = ""
 
 f = open(output_file_name, "w")
 f.write(query.format(name = name, args = args))

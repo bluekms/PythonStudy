@@ -3,7 +3,62 @@
 # ==================================================
 output_file_name = "./MyTool/build/QueryHandler.cs"
 
-select_row = """
+select_row = """using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
+using NK.LobbyWebAPI.Queries;
+using NK.LobbyWebAPI.Services;
+using NK.Network.Packet;
+
+namespace NK.LobbyWebAPI.Feature.{feature}
+{{
+    public sealed record {name}Query(long Usn) : IQuery;
+
+    public sealed record {ret_type}(int {name}Id, int UserValue, bool IsReceived);
+
+    public class {name}Handler : IQueryHandler<{name}Query, {ret_type}>
+    {{
+        private readonly IMapper mapper;
+        private readonly UserService userService;
+
+        public {name}Handler(UserService userService, IMapper mapper)
+        {{
+            this.mapper = mapper;
+            this.userService = userService;
+        }}
+
+        public async Task<{ret_type}> QueryAsync({name}Query query, CancellationToken cancellationToken = default)
+        {{
+            using var user = userService.UserManager.LoadUser(query.Usn, true,
+                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
+
+            if (resultCode != ResultCode.Success)
+            {{
+                throw new WebAPIException(resultCode);
+            }}
+
+            var row = await user.DbContext.{name}
+                .Where(row => row.Usn == query.Usn)
+                .SingleOrDefaultAsync(cancellationToken);
+                // .FindAsync(new object[] {{ query.Usn, query.{name}Id }}, cancellationToken);
+
+            return mapper.Map<{ret_type}>(row);
+        }}
+    }}
+
+    internal sealed class {ret_type}Register : IRegister
+    {{
+        public void Register(TypeAdapterConfig config)
+        {{
+            config
+                .NewConfig<UserDbContext.DBUser{name}, {ret_type}>()
+                .MapToConstructor(true);
+        }}
+    }}
+}}
 """
 
 select_rows = """using System.Collections.Generic;
@@ -89,8 +144,11 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 
         public async Task<bool> QueryAsync(Exist{name}Query query, CancellationToken cancellationToken = default)
         {{
-            using var user = userService.UserManager.LoadUser(query.Usn, true,
-                $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
+            using var user = userService.UserManager.LoadUser(query.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
+            if (resultCode != ResultCode.Success)
+            {{
+                throw new WebAPIException(resultCode);
+            }}
 
             if (resultCode != ResultCode.Success)
             {{
@@ -109,13 +167,14 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 # ==================================================
 #   Main
 #   Set Arguments
+#       select_row
 #       select_rows
 #       exist_row
 # ==================================================
 query = select_rows
-feature = "Trigger2"
-name = "ListTrigger"
-ret_type = "UserTrigger2"
+feature = "SubQuest"
+name = "ListSubQuest"
+ret_type = "UserSubQuestData"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, ret_type=ret_type, feature=feature))
