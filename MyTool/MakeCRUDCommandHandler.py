@@ -49,6 +49,52 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 }}
 """
 
+upsert_row = """using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NK.LobbyWebAPI.Commands;
+using NK.LobbyWebAPI.Services;
+using NK.Network.Packet;
+using NK.StaticData;
+
+namespace NK.LobbyWebAPI.Feature.{feature}
+{{
+    public sealed record Upsert{name}Command(
+        long Usn,
+        int {name}Id) : ICommand;
+
+    public class Upsert{name}Handler : ICommandHandler<Upsert{name}Command>
+    {{
+        private readonly UserService userService;
+
+        public Upsert{name}Handler(UserService userService)
+        {{
+            this.userService = userService;
+        }}
+
+        public async Task ExecuteAsync(Upsert{name}Command command)
+        {{
+            using var user = userService.UserManager.LoadUser(command.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
+            if (resultCode != ResultCode.Success)
+            {{
+                throw new WebAPIException(resultCode);
+            }}
+
+            var static = DataManager.Instance.Get{name}Table().Find(command.{name}Id);
+            
+            await user.DbContext.{name}.AddAsync(new()
+            {{
+                Usn = command.Usn,
+                {name}Id = command.{name}Id,
+            }});
+
+            await user.DbContext.SaveChangesAsync();
+        }}
+    }}
+}}
+"""
+
 delete_row = """using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -87,8 +133,8 @@ namespace NK.LobbyWebAPI.Feature.{feature}
             }}
 
             var row = await user.DbContext.User{name}
-                .Where(row => row.usn == command.Usn)
-                .Where(row => row.{name}__id == command.{name}Id)
+                .Where(row => row.Usn == command.Usn)
+                .Where(row => row.{name}id == command.{name}Id)
                 .SingleOrDefaultAsync();
 
             if (row == null)
@@ -158,12 +204,13 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 #   Set Arguments
 #       insert_row
+#       upsert_row
 #       delete_row
 #       update_row_void
 # ==================================================
-query = insert_row
-feature = "SubQuest"
-name = "SubQuest"
+query = delete_row
+feature = "Mail"
+name = "Mail"
 target_name = ""
 
 f = open(output_file_name, "w")

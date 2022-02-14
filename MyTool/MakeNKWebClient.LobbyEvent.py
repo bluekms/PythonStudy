@@ -51,7 +51,7 @@ packet = """public async UniTask<Res{name}> Request{name}Async({args}, Action<Re
 #       packet
 # ==================================================
 query = packet
-name = "EnrollmentSubQuest"
+name = "SetTutorial"
 args = ""
 
 f = open(output_file_name, "w")

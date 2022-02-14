@@ -171,10 +171,10 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #       select_rows
 #       exist_row
 # ==================================================
-query = select_rows
-feature = "SubQuest"
-name = "ListSubQuest"
-ret_type = "UserSubQuestData"
+query = select_row
+feature = "Mail"
+name = "GetMail"
+ret_type = "UserMailView"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, ret_type=ret_type, feature=feature))

@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NK.LobbyWebAPI.Authorization;
-using NK.LobbyWebAPI.Feature.Common;
 using NK.LobbyWebAPI.Queries;
 using NK.Network.Packet;
 using NK.Network.Packet.Lobby;
@@ -23,22 +22,15 @@ namespace NK.LobbyWebAPI.Controllers.{feature}
     [Authorize(NKPolicy.TokenWithSessionKey)]
     public class {_name}Controller : ControllerBase
     {{
-        private sealed record RequestWrapper(long Usn);
-
-        private sealed record ResponseWrapper(ResultCode Result, NetCommonData CommonData);
-
         private readonly ILogger logger;
         private readonly IMapper mapper;
-        private readonly IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData;
 
         public {_name}Controller(
             ILogger<{_name}Controller> logger,
-            IMapper mapper,
-            IQueryHandler<GetCommonDataQuery, NetCommonData> getCommonData)
+            IMapper mapper)
         {{
             this.logger = logger;
             this.mapper = mapper;
-            this.getCommonData = getCommonData;
         }}
 
         [HttpPost("v1/{name_lower}/get")]
@@ -79,10 +71,12 @@ namespace NK.LobbyWebAPI.Controllers.{feature}
 
         private async Task<ResponseWrapper> HandleAsync(RequestWrapper request, CancellationToken cancellationToken)
         {{
-            var commonData = await getCommonData.QueryAsync(new(request.Usn), cancellationToken);
-
-            return new(ResultCode.Success, commonData);
+            return new(ResultCode.Success);
         }}
+        
+        private sealed record RequestWrapper(long Usn);
+
+        private sealed record ResponseWrapper(ResultCode Result);
     }}
 }}
 """
@@ -93,8 +87,8 @@ namespace NK.LobbyWebAPI.Controllers.{feature}
 #       void_controller
 # ==================================================
 query = void_controller
-feature = "SubQuest"
-_name = "SetTriggerFromSubQuest"
+feature = "Messenger"
+_name = "FinSubQuest"
 
 f = open(output_file_name, "w")
 f.write(query.format(_name=_name, name_lower=_name.lower(), feature=feature))

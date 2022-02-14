@@ -51,8 +51,8 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 # ==================================================
 query = rule_checker
-feature = "SubQuest"
-name = "SetTriggerFromSubQuest"
+feature = "Messenger"
+name = "FinSubQuest"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, feature=feature))
