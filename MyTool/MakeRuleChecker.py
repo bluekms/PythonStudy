@@ -4,13 +4,13 @@
 output_file_name = "./MyTool/build/RuleChecker.cs"
 
 rule_checker = """using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NK.LobbyWebAPI.Rule;
 using NK.LobbyWebAPI.Services;
 using NK.Network.Packet;
+using NK.StaticData;
 
 namespace NK.LobbyWebAPI.Feature.{feature}
 {{
@@ -27,11 +27,7 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 
         public async Task CheckAsync({name}Rule rule, CancellationToken cancellationToken = default)
         {{
-            using var user = userService.UserManager.LoadUser(rule.Usn, true, $"{{GetType().Name}}.{{MethodBase.GetCurrentMethod()?.Name}}", out var resultCode);
-            if (resultCode != ResultCode.Success)
-            {{
-                throw new WebAPIException(resultCode);
-            }}
+            using var user = userService.UserManager.LoadUser(rule.Usn, true, ContentsOpen.None);
 
             var row = await user.DbContext.User{feature}
                 .Where(row => row.Usn == rule.Usn)
@@ -51,8 +47,8 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #   Main
 # ==================================================
 query = rule_checker
-feature = "Messenger"
-name = "FinSubQuest"
+feature = "Mail"
+name = "ObtainSystemMail"
 
 f = open(output_file_name, "w")
 f.write(query.format(name=name, feature=feature))

@@ -208,9 +208,9 @@ namespace NK.LobbyWebAPI.Feature.{feature}
 #       delete_row
 #       update_row_void
 # ==================================================
-query = delete_row
-feature = "Mail"
-name = "Mail"
+query = update_row_void
+feature = "SubQuest"
+name = "SubQuestRewarded"
 target_name = ""
 
 f = open(output_file_name, "w")
